@@ -1,6 +1,7 @@
 
 import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, PanInfo } from "framer-motion";
 
 export type CardCategory = "tech" | "health" | "productivity";
 
@@ -11,6 +12,7 @@ export interface SwipeCardProps {
   category: CardCategory;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  isActive?: boolean;
 }
 
 export function SwipeCard({
@@ -20,9 +22,33 @@ export function SwipeCard({
   category,
   onSwipeLeft,
   onSwipeRight,
+  isActive = true,
 }: SwipeCardProps) {
+  const handleDragEnd = (_: any, info: PanInfo) => {
+    if (info.offset.x > 100) {
+      onSwipeRight?.();
+    } else if (info.offset.x < -100) {
+      onSwipeLeft?.();
+    }
+  };
+
+  if (!isActive) return null;
+
   return (
-    <div className={cn("swipe-card", category)}>
+    <motion.div
+      className={cn(
+        "swipe-card absolute w-full max-w-md",
+        category
+      )}
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      onDragEnd={handleDragEnd}
+      whileDrag={{ scale: 1.05 }}
+      animate={{
+        x: 0,
+        rotate: 0
+      }}
+    >
       <div className="flex justify-between items-start">
         <h3 className="text-lg font-semibold">{title}</h3>
         <span
@@ -47,6 +73,6 @@ export function SwipeCard({
           <Check className="h-5 w-5" />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

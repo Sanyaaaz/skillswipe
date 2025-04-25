@@ -48,6 +48,7 @@ const sampleCards: Card[] = [
 
 const Dashboard = () => {
   const [cards, setCards] = useState<Card[]>(sampleCards);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [streak, setStreak] = useState(3);
   const [weeklyProgress, setWeeklyProgress] = useState(12);
   const weeklyGoal = 20;
@@ -55,12 +56,14 @@ const Dashboard = () => {
   const handleSwipeLeft = (id: string) => {
     toast.info("Card skipped");
     setCards(cards.filter(card => card.id !== id));
+    setCurrentCardIndex(prev => Math.min(prev + 1, cards.length - 1));
   };
 
   const handleSwipeRight = (id: string) => {
     toast.success("Added to your saved items!");
     setCards(cards.filter(card => card.id !== id));
     setWeeklyProgress(prev => prev + 1);
+    setCurrentCardIndex(prev => Math.min(prev + 1, cards.length - 1));
   };
 
   return (
@@ -74,23 +77,26 @@ const Dashboard = () => {
           <div className="col-span-1 lg:col-span-2 space-y-6">
             <h2 className="text-xl font-semibold">Today's Cards</h2>
             
-            {cards.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {cards.map(card => (
-                  <SwipeCard
-                    key={card.id}
-                    {...card}
-                    onSwipeLeft={() => handleSwipeLeft(card.id)}
-                    onSwipeRight={() => handleSwipeRight(card.id)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="bg-card border rounded-xl p-6 text-center">
-                <p className="text-muted-foreground">You've completed all cards for today!</p>
-                <p className="mt-2">Check back tomorrow for new content.</p>
-              </div>
-            )}
+            <div className="relative h-[300px] w-full flex items-center justify-center">
+              {cards.length > 0 ? (
+                <>
+                  {cards.map((card, index) => (
+                    <SwipeCard
+                      key={card.id}
+                      {...card}
+                      isActive={index === currentCardIndex}
+                      onSwipeLeft={() => handleSwipeLeft(card.id)}
+                      onSwipeRight={() => handleSwipeRight(card.id)}
+                    />
+                  ))}
+                </>
+              ) : (
+                <div className="bg-card border rounded-xl p-6 text-center">
+                  <p className="text-muted-foreground">You've completed all cards for today!</p>
+                  <p className="mt-2">Check back tomorrow for new content.</p>
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="space-y-6">
