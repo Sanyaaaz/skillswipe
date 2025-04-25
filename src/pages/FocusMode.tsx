@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,14 +6,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import { Clock, DollarSign, Bell, AlertTriangle, Zap, Shield } from "lucide-react";
+import { Clock, IndianRupee, Bell, AlertTriangle, Zap, Shield } from "lucide-react";
 
 const FocusMode = () => {
   const [taskDescription, setTaskDescription] = useState("");
   const [focusTime, setFocusTime] = useState(30); // minutes
-  const [stakeAmount, setStakeAmount] = useState(5); // default $5
+  const [stakeAmount, setStakeAmount] = useState(5); // default ₹5
   const [isTracking, setIsTracking] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
+  
+  useEffect(() => {
+    let timer: number;
+    
+    if (isTracking && timeRemaining > 0) {
+      timer = window.setInterval(() => {
+        setTimeRemaining((prev) => {
+          if (prev <= 1) {
+            setIsTracking(false);
+            toast.success("Focus session completed successfully! Your stake is safe.");
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isTracking, timeRemaining]);
   
   const handleStartFocus = () => {
     if (!taskDescription) {
@@ -24,19 +44,12 @@ const FocusMode = () => {
     
     setIsTracking(true);
     setTimeRemaining(focusTime * 60); // Convert to seconds
-    
     toast.success(`Focus mode started: ${taskDescription}`);
-    
-    // In a real app, we would start a timer and track distractions
-    // For the demo, we'll simulate a successful focus session
-    setTimeout(() => {
-      setIsTracking(false);
-      toast.success("Focus session completed successfully! Your stake is safe.");
-    }, 10000); // Mock completion after 10 seconds instead of actual focus time
   };
   
   const handleCancelFocus = () => {
     setIsTracking(false);
+    setTimeRemaining(0);
     toast.info("Focus session cancelled. Your stake has been returned.");
   };
   
@@ -106,7 +119,7 @@ const FocusMode = () => {
                     
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        Stake Amount: ${stakeAmount}
+                        Stake Amount: ₹{stakeAmount}
                       </label>
                       <Slider
                         defaultValue={[stakeAmount]}
@@ -117,9 +130,9 @@ const FocusMode = () => {
                         disabled={isTracking}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                        <span>$1</span>
-                        <span>$10</span>
-                        <span>$20</span>
+                        <span>₹1</span>
+                        <span>₹10</span>
+                        <span>₹20</span>
                       </div>
                     </div>
                     
@@ -146,8 +159,8 @@ const FocusMode = () => {
                     </div>
                     
                     <div className="flex items-center justify-center gap-2">
-                      <DollarSign className="h-5 w-5 text-green-500" />
-                      <span className="font-medium">${stakeAmount} at stake</span>
+                      <IndianRupee className="h-5 w-5 text-green-500" />
+                      <span className="font-medium">₹{stakeAmount} at stake</span>
                     </div>
                     
                     <div className="bg-destructive/10 rounded-lg p-4 mb-4">
@@ -212,18 +225,18 @@ const FocusMode = () => {
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-primary" />
+                      <IndianRupee className="h-4 w-4 text-primary" />
                       <span>Money Saved</span>
                     </div>
-                    <span className="font-medium">$45</span>
+                    <span className="font-medium">₹45</span>
                   </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-destructive" />
+                      <IndianRupee className="h-4 w-4 text-destructive" />
                       <span>Money Lost</span>
                     </div>
-                    <span className="font-medium">$10</span>
+                    <span className="font-medium">₹10</span>
                   </div>
                 </div>
                 
