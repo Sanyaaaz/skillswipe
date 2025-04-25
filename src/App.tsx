@@ -7,6 +7,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import Discover from "./pages/Discover";
+import About from "./pages/About";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import FocusMode from "./pages/FocusMode";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +26,11 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/focus" element={<FocusMode />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
