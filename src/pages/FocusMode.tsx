@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -7,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { Clock, IndianRupee, Bell, AlertTriangle, Zap, Shield } from "lucide-react";
+import { GroupStreak } from "@/components/group-streak";
 
 const FocusMode = () => {
   const [taskDescription, setTaskDescription] = useState("");
@@ -187,6 +189,9 @@ const FocusMode = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Group Streak Card - New addition */}
+            <GroupStreak className="mt-6" />
           </div>
           
           <div>
